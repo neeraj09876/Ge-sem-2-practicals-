@@ -1,0 +1,74 @@
+Q2. Import iris data using sklearn library or (Download IRIS data from: https://archive.ics.uci.edu/ml/datasets/iris or import it from sklearn.datasets)
+
+a. Compute mean, mode, median, standard deviation, confidence interval and standard error for each feature
+
+b. Compute correlation coefficients between each pair of features and plot heatmap
+
+c. Find covariance between length of sepal and petal
+
+d. Build contingency table for class feature
+
+#ans:
+#a
+from sklearn.datasets import load_iris
+import numpy as np
+from scipy import stats
+
+# Load Iris dataset
+iris = load_iris()
+data = iris.data
+
+# Compute mean, mode, median, standard deviation for each feature
+mean = np.mean(data, axis=0)
+mode = stats.mode(data, axis=0).mode[0]
+median = np.median(data, axis=0)
+std_dev = np.std(data, axis=0)
+
+# Compute confidence interval and standard error for each feature
+confidence_interval = stats.norm.interval(0.95, loc=mean, scale=std_dev/np.sqrt(len(data)))
+standard_error = std_dev / np.sqrt(len(data))
+
+print("Mean:", mean)
+print("Mode:", mode)
+print("Median:", median)
+print("Standard Deviation:", std_dev)
+print("Confidence Interval:", confidence_interval)
+print("Standard Error:", standard_error)
+
+#b
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Compute correlation matrix
+correlation_matrix = np.corrcoef(data, rowvar=False)
+
+# Plot heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", xticklabels=iris.feature_names, yticklabels=iris.feature_names)
+plt.title("Correlation Heatmap of Iris Features")
+plt.show()
+#c
+# Sepal length and petal length columns
+sepal_length = data[:, 0]
+petal_length = data[:, 2]
+
+# Compute covariance
+covariance = np.cov(sepal_length, petal_length)[0, 1]
+print("Covariance between Sepal Length and Petal Length:", covariance)
+
+#d
+from collections import Counter
+
+# Load target (class) labels
+target = iris.target
+
+# Count occurrences of each class
+class_counts = Counter(target)
+
+# Build contingency table
+contingency_table = np.zeros((len(np.unique(target)), len(np.unique(target))))
+for i in range(len(data)):
+    contingency_table[target[i]][target[i]] += 1
+
+print("Contingency Table for Class Feature:")
+print(contingency_table)
