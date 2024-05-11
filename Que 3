@@ -1,0 +1,46 @@
+3. Load Titanic data from sklearn library, plot the following with proper legend and axis labels:
+
+a. Plot bar chart to show the frequency of survivors and non-survivors for male and female passengers separately
+
+b. Draw a scatter plot for any two selected features
+
+c. Compare density distribution for features age and passenger fare
+
+d. Use a pair plot to show pairwise bivariate distribution
+
+#ans:
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load Titanic dataset from seaborn
+titanic = sns.load_dataset("titanic")
+
+# a. Plot bar chart to show the frequency of survivors and non-survivors for male and female passengers separately
+sns.countplot(x="sex", hue="survived", data=titanic)
+plt.title("Survivors by Gender")
+plt.xlabel("Gender")
+plt.ylabel("Count")
+plt.legend(title="Survived", loc="upper right", labels=["No", "Yes"])
+plt.show()
+
+# b. Draw a scatter plot for any two selected features
+sns.scatterplot(x="age", y="fare", data=titanic)
+plt.title("Scatter Plot of Age vs Fare")
+plt.xlabel("Age")
+plt.ylabel("Fare")
+plt.show()
+
+# c. Compare density distribution for features age and passenger fare
+plt.figure(figsize=(10, 6))
+sns.kdeplot(titanic['age'], shade=True, label='Age')
+sns.kdeplot(titanic['fare'], shade=True, label='Fare')
+plt.title("Density Distribution of Age and Fare")
+plt.xlabel("Value")
+plt.ylabel("Density")
+plt.legend()
+plt.show()
+
+# d. Use a pair plot to show pairwise bivariate distribution
+sns.pairplot(titanic)
+plt.suptitle("Pairwise Bivariate Distribution of Titanic Dataset", y=1.02)
+plt.show()
