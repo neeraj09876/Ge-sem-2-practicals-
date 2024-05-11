@@ -1,0 +1,55 @@
+que1. Load a Pandas dataframe with a selected dataset. Identify and count the missing values in a dataframe. Clean the data after removing noise as follows
+
+a. Drop duplicate rows.
+
+b. Detect the outliers and remove the rows having outliers
+
+c. Identify the most correlated positively correlated attributes and negatively correlated attributes
+
+#ans: 
+import pandas as pd
+from sklearn.datasets import load_iris
+
+# Load the Iris dataset
+iris = load_iris()
+df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+
+# Adding target column
+df['target'] = iris.target
+
+# Display the first few rows of the dataframe
+print(df.head())
+
+# Identify and count missing values
+missing_values = df.isnull().sum()
+print("\nMissing Values:")
+print(missing_values)
+
+# Drop duplicate rows
+df = df.drop_duplicates()
+
+# Detect outliers
+outliers = []
+for column in df.columns:
+    q1 = df[column].quantile(0.25)
+    q3 = df[column].quantile(0.75)
+    iqr = q3 - q1
+    lower_bound = q1 - 1.5 * iqr
+    upper_bound = q3 + 1.5 * iqr
+    outliers.extend(df[(df[column] < lower_bound) | (df[column] > upper_bound)].index)
+
+# Remove rows with outliers
+df = df.drop(outliers)
+
+# Identify correlation
+correlation_matrix = df.corr()
+
+# Positively correlated attributes
+pos_corr = correlation_matrix[(correlation_matrix > 0.5) & (correlation_matrix < 1.0)].stack().drop_duplicates()
+print("\nPositively Correlated Attributes:")
+print(pos_corr)
+
+# Negatively correlated attributes
+neg_corr = correlation_matrix[(correlation_matrix < -0.5) & (correlation_matrix > -1.0)].stack().drop_duplicates()
+print("\nNegatively Correlated Attributes:")
+print(neg_corr)
